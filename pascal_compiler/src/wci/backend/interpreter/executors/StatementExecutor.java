@@ -7,11 +7,13 @@ import wci.intermediate.ICodeNode;
  * @Author zhaocenliu
  * @create 2023/2/13 6:10 PM
  */
-public class StatementExecutor {
+public class StatementExecutor extends Executor {
     // TODO
-    public StatementExecutor(Executor executor) {
+    public StatementExecutor(Executor parent) {
+        super(parent);
     }
 
     public void execute(ICodeNode rootNode) {
+
     }
 }
