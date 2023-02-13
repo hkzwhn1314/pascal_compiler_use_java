@@ -16,6 +16,10 @@ public class RuntimeErrorHandler {
     private static final int MAX_ERRORS = 5;
     private static int errorCount = 0;
 
+    public static int getErrorCount() {
+        return errorCount;
+    }
+
     public void flag(ICodeNode node, RuntimeErrorCode errorCode,
                      Backend backend) {
         String lineNumber = null;
@@ -35,5 +39,11 @@ public class RuntimeErrorHandler {
         }
 
 
+
+
+
     }
+
+
+
 }
