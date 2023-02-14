@@ -2,9 +2,14 @@ package wci.backend.interpreter.executors;
 
 import wci.backend.interpreter.Executor;
 import wci.intermediate.ICodeNode;
+import wci.intermediate.SymTabEntry;
 import wci.message.Message;
 
+import java.util.ArrayList;
+
+import static wci.intermediate.icodeimpl.ICodeKeyImpl.ID;
 import static wci.intermediate.icodeimpl.ICodeKeyImpl.LINE;
+import static wci.intermediate.symtabimpl.SymTabKeyImpl.DATA_VALUE;
 import static wci.message.MessageType.ASSIGN;
 
 /**
@@ -17,6 +22,18 @@ public class AssignmentExecutor extends StatementExecutor {
     }
 
     public Object execute(ICodeNode node) {
+        ArrayList<ICodeNode> children = node.getChildren();
+        ICodeNode variableNode = children.get(0);
+        ICodeNode expressionNode = children.get(1);
+
+        // Execute the expression and get its value.
+        ExpressionExecutor expressionExecutor = new ExpressionExecutor(this);
+        Object value = expressionExecutor.execute(expressionNode);
+
+        SymTabEntry variableId = (SymTabEntry) variableNode.getAttribute(ID);
+        variableId.setAttribute(DATA_VALUE, value);
+        sendMessage(node, variableId.getName(), value);
+        ++executionCount;
         return null;
     }
 
