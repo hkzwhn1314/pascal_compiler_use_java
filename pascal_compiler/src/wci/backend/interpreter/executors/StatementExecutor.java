@@ -2,9 +2,15 @@ package wci.backend.interpreter.executors;
 
 import wci.backend.interpreter.Executor;
 import wci.intermediate.ICodeNode;
+import wci.intermediate.icodeimpl.ICodeNodeTypeImpl;
+import wci.message.Message;
+
+import static wci.backend.interpreter.RuntimeErrorCode.UNIMPLEMENTED_FEATURE;
+import static wci.intermediate.icodeimpl.ICodeKeyImpl.LINE;
+import static wci.message.MessageType.SOURCE_LINE;
 
 /**
- * @Author zhaocenliu
+ * @Author zhao cen liu
  * @create 2023/2/13 6:10 PM
  */
 public class StatementExecutor extends Executor {
@@ -13,7 +19,35 @@ public class StatementExecutor extends Executor {
         super(parent);
     }
 
-    public void execute(ICodeNode rootNode) {
+    public Object execute(ICodeNode node) {
+        ICodeNodeTypeImpl nodeType = (ICodeNodeTypeImpl) node.getType();
+        // Send a message about the current source line.
+        sendSourceLineMessage(node);
+        switch (nodeType) {
+            case COMPOUND: {
+                CompoundExecutor compoundExecutor = new CompoundExecutor(this);
+                return compoundExecutor.execute(node);
+            }
+            case ASSIGN: {
+                AssignmentExecutor assignmentExecutor =
+                        new AssignmentExecutor(this);
+                return assignmentExecutor.execute(node);
+            }
+            case NO_OP:
+                return null;
+            default: {
+                errorHandler.flag(node, UNIMPLEMENTED_FEATURE, this);
+                return null;
+            }
+        }
 
+    }
+
+    private void sendSourceLineMessage(ICodeNode node) {
+        Object lineNumber = node.getAttribute(LINE);
+        // Send the SOURCE_LINE message.
+        if (lineNumber != null) {
+            sendMessage(new Message(SOURCE_LINE, lineNumber));
+        }
     }
 }

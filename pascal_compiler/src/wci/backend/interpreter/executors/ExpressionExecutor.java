@@ -1,6 +1,7 @@
 package wci.backend.interpreter.executors;
 
 import wci.backend.interpreter.Executor;
+import wci.intermediate.ICodeNode;
 
 /**
  * @Author zhaocenliu
@@ -10,5 +11,10 @@ public class ExpressionExecutor extends StatementExecutor {
 
     public ExpressionExecutor(Executor parent) {
         super(parent);
+    }
+
+
+    public Object execute(ICodeNode node) {
+        return null;
     }
 }
