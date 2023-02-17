@@ -1,6 +1,8 @@
 package wci.frontend.pascal.parsers;
 
+import wci.frontend.Token;
 import wci.frontend.pascal.PascalParserTD;
+import wci.intermediate.ICodeNode;
 
 /**
  * @Author zhaocenliu
@@ -14,5 +16,9 @@ public class CaseStatementParser extends StatementParser {
      */
     public CaseStatementParser(PascalParserTD parent) {
         super(parent);
+    }
+
+    public ICodeNode parse(Token token) throws Exception {
+        return null;
     }
 }

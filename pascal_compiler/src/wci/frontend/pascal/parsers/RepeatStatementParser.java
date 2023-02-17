@@ -1,6 +1,8 @@
 package wci.frontend.pascal.parsers;
 
+import wci.frontend.Token;
 import wci.frontend.pascal.PascalParserTD;
+import wci.intermediate.ICodeNode;
 
 /**
  * @Author zhaocenliu
@@ -8,12 +10,13 @@ import wci.frontend.pascal.PascalParserTD;
  */
 public class RepeatStatementParser extends StatementParser {
 
-    /**
-     * Constructor.
-     *
-     * @param parent the parent parser.
-     */
+
     public RepeatStatementParser(PascalParserTD parent) {
         super(parent);
+    }
+
+    // 语法形式:REPEAT j := i;k := i;UNTIL i <= j
+    public ICodeNode parse(Token token) throws Exception {
+        return null;
     }
 }
