@@ -4,6 +4,8 @@ import wci.frontend.*;
 import wci.frontend.pascal.*;
 import wci.intermediate.*;
 
+import java.util.EnumSet;
+
 import static wci.frontend.pascal.PascalTokenType.*;
 import static wci.frontend.pascal.PascalErrorCode.*;
 import static wci.intermediate.icodeimpl.ICodeNodeTypeImpl.*;
@@ -17,26 +19,36 @@ import static wci.intermediate.icodeimpl.ICodeKeyImpl.*;
  *
  * <p>For instructional purposes only.  No warranties.</p>
  */
-public class AssignmentStatementParser extends StatementParser
-{
+public class AssignmentStatementParser extends StatementParser {
     /**
      * Constructor.
+     *
      * @param parent the parent parser.
      */
-    public AssignmentStatementParser(PascalParserTD parent)
-    {
+    public AssignmentStatementParser(PascalParserTD parent) {
         super(parent);
     }
 
     /**
      * Parse an assignment statement.
+     *
      * @param token the initial token.
      * @return the root node of the generated parse tree.
      * @throws Exception if an error occurred.
      */
+
+    // Synchronization set for the := token.
+    private static final EnumSet<PascalTokenType> COLON_EQUALS_SET =
+            ExpressionParser.EXPR_START_SET.clone();
+
+    static {
+        COLON_EQUALS_SET.add(COLON_EQUALS);
+        COLON_EQUALS_SET.addAll(StatementParser.STMT_FOLLOW_SET);
+    }
+
+
     public ICodeNode parse(Token token)
-        throws Exception
-    {
+            throws Exception {
         // Create the ASSIGN node.
         ICodeNode assignNode = ICodeFactory.createICodeNode(ASSIGN);
 
@@ -58,11 +70,14 @@ public class AssignmentStatementParser extends StatementParser
         // The ASSIGN node adopts the variable node as its first child.
         assignNode.addChild(variableNode);
 
+        //PLUS, MINUS, IDENTIFIER, INTEGER, REAL, STRING,
+        //PascalTokenType.NOT, LEFT_PAREN := SEMICOLON, END, ELSE, UNTIL, DOT
+        token = synchronize(COLON_EQUALS_SET);
+
         // Look for the := token.
         if (token.getType() == COLON_EQUALS) {
             token = nextToken();  // consume the :=
-        }
-        else {
+        } else {
             errorHandler.flag(token, MISSING_COLON_EQUALS, this);
         }
 

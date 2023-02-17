@@ -103,7 +103,9 @@ public class PascalParserTD extends Parser {
     public int getErrorCount() {
         return errorHandler.getErrorCount();
     }
-
+    // variable
+    //PLUS, MINUS, IDENTIFIER, INTEGER, REAL, STRING,
+    // PascalTokenType.NOT, LEFT_PAREN := SEMICOLON, END, ELSE, UNTIL, DOT
     public Token synchronize(EnumSet syncSet) throws Exception {
         Token token = currentToken();
         if (!syncSet.contains(token.getType())) {

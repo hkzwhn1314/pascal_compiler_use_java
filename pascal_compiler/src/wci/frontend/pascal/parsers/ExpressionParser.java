@@ -22,37 +22,43 @@ import static wci.intermediate.icodeimpl.ICodeKeyImpl.*;
  *
  * <p>For instructional purposes only.  No warranties.</p>
  */
-public class ExpressionParser extends StatementParser
-{
+public class ExpressionParser extends StatementParser {
     /**
      * Constructor.
+     *
      * @param parent the parent parser.
      */
-    public ExpressionParser(PascalParserTD parent)
-    {
+    public ExpressionParser(PascalParserTD parent) {
         super(parent);
     }
 
     /**
      * Parse an expression.
+     *
      * @param token the initial token.
      * @return the root node of the generated parse tree.
      * @throws Exception if an error occurred.
      */
+
+    static final EnumSet<PascalTokenType> EXPR_START_SET =
+            EnumSet.of(PLUS, MINUS, IDENTIFIER, INTEGER, REAL, STRING,
+                    PascalTokenType.NOT, LEFT_PAREN);
+
+
     public ICodeNode parse(Token token)
-        throws Exception
-    {
+            throws Exception {
         return parseExpression(token);
     }
 
     // Set of relational operators.
     private static final EnumSet<PascalTokenType> REL_OPS =
-        EnumSet.of(EQUALS, NOT_EQUALS, LESS_THAN, LESS_EQUALS,
-                   GREATER_THAN, GREATER_EQUALS);
+            EnumSet.of(EQUALS, NOT_EQUALS, LESS_THAN, LESS_EQUALS,
+                    GREATER_THAN, GREATER_EQUALS);
 
     // Map relational operator tokens to node types.
     private static final HashMap<PascalTokenType, ICodeNodeType>
-        REL_OPS_MAP = new HashMap<PascalTokenType, ICodeNodeType>();
+            REL_OPS_MAP = new HashMap<PascalTokenType, ICodeNodeType>();
+
     static {
         REL_OPS_MAP.put(EQUALS, EQ);
         REL_OPS_MAP.put(NOT_EQUALS, NE);
@@ -60,17 +66,19 @@ public class ExpressionParser extends StatementParser
         REL_OPS_MAP.put(LESS_EQUALS, LE);
         REL_OPS_MAP.put(GREATER_THAN, GT);
         REL_OPS_MAP.put(GREATER_EQUALS, GE);
-    };
+    }
+
+    ;
 
     /**
      * Parse an expression.
+     *
      * @param token the initial token.
      * @return the root of the generated parse subtree.
      * @throws Exception if an error occurred.
      */
     private ICodeNode parseExpression(Token token)
-        throws Exception
-    {
+            throws Exception {
         // Parse a simple expression and make the root of its tree
         // the root node.
         ICodeNode rootNode = parseSimpleExpression(token);
@@ -102,26 +110,29 @@ public class ExpressionParser extends StatementParser
 
     // Set of additive operators.
     private static final EnumSet<PascalTokenType> ADD_OPS =
-        EnumSet.of(PLUS, MINUS, PascalTokenType.OR);
+            EnumSet.of(PLUS, MINUS, PascalTokenType.OR);
 
     // Map additive operator tokens to node types.
     private static final HashMap<PascalTokenType, ICodeNodeTypeImpl>
-        ADD_OPS_OPS_MAP = new HashMap<PascalTokenType, ICodeNodeTypeImpl>();
+            ADD_OPS_OPS_MAP = new HashMap<PascalTokenType, ICodeNodeTypeImpl>();
+
     static {
         ADD_OPS_OPS_MAP.put(PLUS, ADD);
         ADD_OPS_OPS_MAP.put(MINUS, SUBTRACT);
         ADD_OPS_OPS_MAP.put(PascalTokenType.OR, ICodeNodeTypeImpl.OR);
-    };
+    }
+
+    ;
 
     /**
      * Parse a simple expression.
+     *
      * @param token the initial token.
      * @return the root of the generated parse subtree.
      * @throws Exception if an error occurred.
      */
     private ICodeNode parseSimpleExpression(Token token)
-        throws Exception
-    {
+            throws Exception {
         TokenType signType = null;  // type of leading sign (if any)
 
         // Look for a leading + or - sign.
@@ -174,28 +185,31 @@ public class ExpressionParser extends StatementParser
 
     // Set of multiplicative operators.
     private static final EnumSet<PascalTokenType> MULT_OPS =
-        EnumSet.of(STAR, SLASH, DIV, PascalTokenType.MOD, PascalTokenType.AND);
+            EnumSet.of(STAR, SLASH, DIV, PascalTokenType.MOD, PascalTokenType.AND);
 
     // Map multiplicative operator tokens to node types.
     private static final HashMap<PascalTokenType, ICodeNodeType>
-        MULT_OPS_OPS_MAP = new HashMap<PascalTokenType, ICodeNodeType>();
+            MULT_OPS_OPS_MAP = new HashMap<PascalTokenType, ICodeNodeType>();
+
     static {
         MULT_OPS_OPS_MAP.put(STAR, MULTIPLY);
         MULT_OPS_OPS_MAP.put(SLASH, FLOAT_DIVIDE);
         MULT_OPS_OPS_MAP.put(DIV, INTEGER_DIVIDE);
         MULT_OPS_OPS_MAP.put(PascalTokenType.MOD, ICodeNodeTypeImpl.MOD);
         MULT_OPS_OPS_MAP.put(PascalTokenType.AND, ICodeNodeTypeImpl.AND);
-    };
+    }
+
+    ;
 
     /**
      * Parse a term.
+     *
      * @param token the initial token.
      * @return the root of the generated parse subtree.
      * @throws Exception if an error occurred.
      */
     private ICodeNode parseTerm(Token token)
-        throws Exception
-    {
+            throws Exception {
         // Parse a factor and make its node the root node.
         ICodeNode rootNode = parseFactor(token);
 
@@ -229,13 +243,13 @@ public class ExpressionParser extends StatementParser
 
     /**
      * Parse a factor.
+     *
      * @param token the initial token.
      * @return the root of the generated parse subtree.
      * @throws Exception if an error occurred.
      */
     private ICodeNode parseFactor(Token token)
-        throws Exception
-    {
+            throws Exception {
         TokenType tokenType = token.getType();
         ICodeNode rootNode = null;
 
@@ -311,8 +325,7 @@ public class ExpressionParser extends StatementParser
                 token = currentToken();
                 if (token.getType() == RIGHT_PAREN) {
                     token = nextToken();  // consume the )
-                }
-                else {
+                } else {
                     errorHandler.flag(token, MISSING_RIGHT_PAREN, this);
                 }
 
