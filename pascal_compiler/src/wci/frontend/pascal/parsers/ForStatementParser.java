@@ -8,7 +8,7 @@ import wci.intermediate.ICodeNode;
  * @Author zhaocenliu
  * @create 2023/2/16 5:16 PM
  */
-public class ForStatementParser extends StatementParser{
+public class ForStatementParser extends StatementParser {
     /**
      * Constructor.
      *
