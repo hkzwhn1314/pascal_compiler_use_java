@@ -73,7 +73,7 @@ public class WhileStatementParser extends StatementParser {
         // The LOOP node adopts the statement subtree as its second child.
         StatementParser statementParser = new StatementParser(this);
         loopNode.addChild(statementParser.parse(token));
-        
+
         return loopNode;
     }
 }

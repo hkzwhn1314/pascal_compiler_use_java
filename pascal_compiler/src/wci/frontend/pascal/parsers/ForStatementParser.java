@@ -18,6 +18,7 @@ public class ForStatementParser extends StatementParser{
         super(parent);
     }
 
+    // FOR k := j TO 5 DO n := k
     public ICodeNode parse(Token token) throws Exception {
         return null;
     }
