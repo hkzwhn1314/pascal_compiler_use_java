@@ -18,6 +18,8 @@ public class IfStatementParser extends StatementParser {
         super(parent);
     }
 
+    //IF (i = j) THEN t := 200
+    //ELSE f := -200;
     public ICodeNode parse(Token token) throws Exception {
         return null;
     }
