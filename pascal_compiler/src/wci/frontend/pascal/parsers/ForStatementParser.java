@@ -12,6 +12,7 @@ import java.util.EnumSet;
 import static wci.frontend.pascal.PascalErrorCode.MISSING_DO;
 import static wci.frontend.pascal.PascalErrorCode.MISSING_TO_DOWNTO;
 import static wci.frontend.pascal.PascalTokenType.*;
+import static wci.intermediate.icodeimpl.ICodeKeyImpl.VALUE;
 import static wci.intermediate.icodeimpl.ICodeNodeTypeImpl.*;
 
 /**
@@ -109,7 +110,37 @@ public class ForStatementParser extends StatementParser {
             errorHandler.flag(token, MISSING_DO, this);
         }
 
+        // Parse the nested statement. The LOOP node adopts the statement
+        // node as its second child.
+        StatementParser statementParser = new StatementParser(this);
+        loopNode.addChild(statementParser.parse(token));
 
-        return null;
+        // Create an assignment with a copy of the control variable
+        // to advance the value of the variable.
+        ICodeNode nextAssignNode = ICodeFactory.createICodeNode(ASSIGN);
+        nextAssignNode.addChild(controlVarNode.copy());
+
+        // Create the arithmetic operator node:
+        // ADD for TO, or SUBTRACT for DOWNTO.
+        ICodeNode arithOpNode = ICodeFactory.createICodeNode(direction == TO
+                ? ADD : SUBTRACT);
+
+        // The operator node adopts a copy of the loop variable as its
+        // first child and the value 1 as its second child.
+        arithOpNode.addChild(controlVarNode.copy());
+        ICodeNode oneNode = ICodeFactory.createICodeNode(INTEGER_CONSTANT);
+        // 单步++1
+        oneNode.setAttribute(VALUE, 1);
+        arithOpNode.addChild(oneNode);
+
+        // The next ASSIGN node adopts the arithmetic operator node as its
+        // second child. The loop node adopts the next ASSIGN node as its
+        // third child.
+        nextAssignNode.addChild(arithOpNode);
+        loopNode.addChild(nextAssignNode);
+        // Set the current line number attribute.
+        setLineNumber(nextAssignNode, targetToken);
+
+        return compoundNode;
     }
 }
