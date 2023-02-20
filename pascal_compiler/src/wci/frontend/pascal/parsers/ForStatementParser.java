@@ -109,7 +109,7 @@ public class ForStatementParser extends StatementParser {
             errorHandler.flag(token, MISSING_DO, this);
         }
 
-        
+
         return null;
     }
 }
