@@ -18,6 +18,12 @@ public class CaseStatementParser extends StatementParser {
         super(parent);
     }
 
+    //CASE i+1 OF
+    //1: j := i;
+    //4: j := 4*i;
+    //5, 2, 3: j := 523*i;
+    //END
+
     public ICodeNode parse(Token token) throws Exception {
         return null;
     }
