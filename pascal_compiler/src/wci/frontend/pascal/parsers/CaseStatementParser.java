@@ -13,7 +13,7 @@ import java.util.HashSet;
 
 import static wci.frontend.pascal.PascalErrorCode.*;
 import static wci.frontend.pascal.PascalTokenType.*;
-import static wci.intermediate.icodeimpl.ICodeNodeTypeImpl.SELECT;
+import static wci.intermediate.icodeimpl.ICodeNodeTypeImpl.*;
 
 /**
  * @Author zhaocenliu
@@ -101,9 +101,31 @@ public class CaseStatementParser extends StatementParser {
      * @return the root SELECT_BRANCH node of the subtree.
      * @throws Exception if an error occurred.
      */
+    // currentToken = of
     private ICodeNode parseBranch(Token token, HashSet<Object> constantSet)
             throws Exception {
+        ICodeNode branchNode = ICodeFactory.createICodeNode(SELECT_BRANCH);
+        ICodeNode constantsNode =
+                ICodeFactory.createICodeNode(SELECT_CONSTANTS);
+        branchNode.addChild(constantsNode);
+
+        // Parse the list of CASE branch constants.
+        // The SELECT_CONSTANTS node adopts each constant.
+        parseConstantList(token, constantsNode, constantSet);
+
         return null;
+    }
+
+
+    // Synchronization set for COMMA.
+    private static final EnumSet<PascalTokenType> COMMA_SET =
+            CONSTANT_START_SET.clone();
+
+    static {
+        COMMA_SET.add(COMMA);
+        COMMA_SET.add(COLON);
+        COMMA_SET.addAll(StatementParser.STMT_START_SET);
+        COMMA_SET.addAll(StatementParser.STMT_FOLLOW_SET);
     }
 
     /**
@@ -114,9 +136,13 @@ public class CaseStatementParser extends StatementParser {
      * @param constantSet   the set of CASE branch constants.
      * @throws Exception if an error occurred.
      */
+
+
     private void parseConstantList(Token token, ICodeNode constantsNode,
                                    HashSet<Object> constantSet) throws Exception {
-
+        while (CONSTANT_START_SET.contains(token.getType())) {
+            constantsNode.addChild(parseConstant(token, constantSet));
+        }
     }
 
     /**
