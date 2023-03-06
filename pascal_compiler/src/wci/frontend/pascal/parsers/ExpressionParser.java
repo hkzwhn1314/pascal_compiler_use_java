@@ -198,8 +198,7 @@ public class ExpressionParser extends StatementParser {
         MULT_OPS_OPS_MAP.put(PascalTokenType.MOD, ICodeNodeTypeImpl.MOD);
         MULT_OPS_OPS_MAP.put(PascalTokenType.AND, ICodeNodeTypeImpl.AND);
     }
-
-    ;
+    
 
     /**
      * Parse a term.
